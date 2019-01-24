@@ -1,0 +1,60 @@
+[DEFAULT]
+bantime  = 3600
+maxretry = 4
+destemail =
+ignoreip = 127.0.0.0/8
+action = iptables
+
+[ssh]
+enabled  = true
+action = iptables[name=SSH, port="22"]
+port     = ssh
+filter   = sentora-ssh
+logpath  = /var/log/secure
+maxretry = 6
+bantime  = 360000
+
+# the sentora-apache filter covers apache auth and overflow
+[apache]
+enabled  = true
+action = iptables-multiport[name=Postfix, port="80,443"]
+port     = http,https
+filter   = sentora-apache
+logpath  = /var/sentora/logs/domains/*/*error.log
+maxretry = 6
+
+#sentora uses also de secure log for proftpd.
+[proftpd]
+enabled  = true
+action = iptables[name=FTP, port="21"]
+port     = ftp,ftp-data,ftps,ftps-data
+filter   = sentora-proftpd
+logpath  = /var/log/secure
+maxretry = 5
+
+# the sentora-postfix filter covers postfix and sasl
+[postfix]
+enabled  = true
+action = iptables-multiport[name=Postfix, port="25,465"]
+port     = smtp,ssmtp
+filter   = sentora-postfix
+logpath  = /var/log/maillog
+maxretry = 10
+
+# to be fixed yet
+#[control-panel]
+#enabled  = true
+#port     = http,https
+#filter   = sentora-control
+#logpath  = /var/log/httpd/error_log
+#maxretry = 4
+#bantime  = 864000
+#findtime = 3600
+
+[dovecot]
+enabled  = true
+action = iptables-multiport[name=Dovecot, port="143,993,110,995"]
+port     = imap,imaps,pop3,pop3s
+filter   = sentora-dovecot
+logpath  = /var/log/dovecot-info.log
+maxretry = 10
