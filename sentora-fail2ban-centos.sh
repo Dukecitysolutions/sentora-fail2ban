@@ -61,13 +61,14 @@ mkdir /etc/sentora/panel/modules/fail2ban
 cd /etc/sentora/panel/modules/fail2ban
 
 ## Disabled for now
-# wget http://park.webimproved.nl/fail2ban/sent...il2ban.zip
-
+wget http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
 unzip sentora-fail2ban.zip
-cp -f /etc/sentora/panel/modules/fail2ban/centos.jail.local /etc/fail2ban/
+cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
+cp -f /etc/sentora/panel/modules/fail2ban/config/centos.jail.local /etc/fail2ban/
 mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
-cp -f /etc/sentora/panel/modules/fail2ban/*.conf /etc/fail2ban/filter.d/
 chmod 777 /etc/fail2ban/jail.local
+
+## Add fail2ban to cron - Not sure what this does yet
 #cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban-centos /etc/cron.daily/
 
 ## Check fail2ban Config and start iptables
