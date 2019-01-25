@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo ""
 echo "############################################################"
 echo "#  Fail2Ban for Sentora 1.0.0 or 1.0.3  #"
