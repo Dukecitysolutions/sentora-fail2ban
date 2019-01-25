@@ -8,7 +8,7 @@ Sentora Fail2ban install CentOS
 
 ##Downloading Sentora Fail2ban install CentOS 
 
-I will have instructions soon. Please stay tuned to help develope Sentora.
+bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban-centos.sh)
 
 ##Getting support
 
