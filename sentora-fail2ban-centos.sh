@@ -76,4 +76,4 @@ chmod 777 /etc/fail2ban/jail.local
 ## Check fail2ban Config and start iptables
 chkconfig --level 23 fail2ban on
 systemctl start iptables
-service fail2ban start
+systemctl restart fail2ban
