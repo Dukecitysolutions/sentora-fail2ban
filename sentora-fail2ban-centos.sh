@@ -63,7 +63,7 @@ mkdir /etc/sentora/panel/modules/fail2ban
 cd /etc/sentora/panel/modules/fail2ban
 
 ## Disabled for now
-wget -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
+wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
 unzip sentora-fail2ban.zip
 cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
 cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban/config/centos.jail.local /etc/fail2ban/
