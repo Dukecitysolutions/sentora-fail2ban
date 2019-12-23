@@ -27,7 +27,7 @@ ARCH=$(uname -m)
 echo "Detected : $OS  $VER  $ARCH"
 
 if [[ "$OS" = "CentOs" && ("$VER" = "6" || "$VER" = "7" ) || 
-      "$OS" = "Ubuntu" && ( "$VER" = "16.04" ) ]] ; then
+      "$OS" = "Ubuntu" && ( "$VER" = "14.04" || "$VER" = "16.04" || "$VER" = "18.04" ) ]] ; then
     echo "- Ok."
 else
     echo "Sorry, this OS is not supported by Sentora." 
@@ -42,11 +42,11 @@ systemctl stop firewalld
 systemctl mask firewalld
 
 ## Install other services needed
-yum install unzip
-yum install wget
+yum -y install unzip
+yum -y install wget
 
 ## Install iptables and enable services
-yum install iptables-services
+yum -y install iptables-services
 systemctl enable iptables
 
 ## Setup iptable default Sentora Ports
@@ -63,7 +63,7 @@ iptables -A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
 service iptables save
 
 ## Install Fail2ban 
-yum install fail2ban
+yum -y install fail2ban
 
 ## Make Fail2ban Module folder in Sentora modules
 mkdir /etc/sentora/panel/modules/fail2ban
@@ -85,11 +85,15 @@ chkconfig --level 23 fail2ban on
 systemctl start iptables
 systemctl restart fail2ban
 
+# Add missing logs for Roundcube to allow fail2ban to start on first installs.
+touch /var/sentora/logs/roundcube/errors
+chown -R apache:apache /var/sentora/logs/roundcube/errors
+chmod 0664 /var/sentora/logs/roundcube/errors
 
 elif [[ "$OS" = "Ubuntu" ]]; then
 
 	# Update system
-	apt-get update && apt-get upgrade -y
+	#apt-get update && apt-get upgrade -y
 	
 	## Setup iptable default Sentora Ports
 	iptables -A INPUT -i lo -j ACCEPT
@@ -128,7 +132,12 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 	
 	## Check fail2ban Config and start iptables
 	chkconfig --level 23 fail2ban on
-	systemctl start iptables
+	#systemctl start iptables
 	systemctl restart fail2ban
+	
+	# Add missing logs for Roundcube to allow fail2ban to start on first installs.
+	touch /var/sentora/logs/roundcube/errors
+	chown -R www-data:www-data /var/sentora/logs/roundcube/errors
+	chmod 0664 /var/sentora/logs/roundcube/errors
 
 fi
