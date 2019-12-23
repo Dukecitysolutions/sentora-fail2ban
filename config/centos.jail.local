@@ -5,11 +5,11 @@ destemail =
 ignoreip = 127.0.0.0/8
 action = iptables
 
-[ssh]
+[sshd]
 enabled  = true
 action = iptables[name=SSH, port="22"]
 port     = ssh
-filter   = sentora-ssh
+filter   = sentora-sshd
 logpath  = /var/log/secure
 maxretry = 6
 bantime  = 360000
