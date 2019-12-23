@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo ""
 echo "############################################################"
@@ -9,25 +9,29 @@ echo -e "\nChecking that minimal requirements are ok"
 
 # Ensure the OS is compatible with the launcher
 if [ -f /etc/centos-release ]; then
-   OS="CentOs"
-   VERFULL=$(sed 's/^.*release //;s/ (Fin.*$//' /etc/centos-release)
-   VER=${VERFULL:0:1} # return 6 or 7
+    OS="CentOs"
+    VERFULL=$(sed 's/^.*release //;s/ (Fin.*$//' /etc/centos-release)
+    VER=${VERFULL:0:1} # return 6 or 7
 elif [ -f /etc/lsb-release ]; then
-   OS=$(grep DISTRIB_ID /etc/lsb-release | sed 's/^.*=//')
-   VER=$(grep DISTRIB_RELEASE /etc/lsb-release | sed 's/^.*=//')
+    OS=$(grep DISTRIB_ID /etc/lsb-release | sed 's/^.*=//')
+    VER=$(grep DISTRIB_RELEASE /etc/lsb-release | sed 's/^.*=//')
+elif [ -f /etc/os-release ]; then
+    OS=$(grep -w ID /etc/os-release | sed 's/^.*=//')
+    VER=$(grep VERSION_ID /etc/os-release | sed 's/^.*"\(.*\)"/\1/')
 else
-   OS=$(uname -s)
-   VER=$(uname -r)
+    OS=$(uname -s)
+    VER=$(uname -r)
 fi
 ARCH=$(uname -m)
 
 echo "Detected : $OS  $VER  $ARCH"
 
-if [[ "$OS" = "CentOs" && ("$VER" = "6" || "$VER" = "7" ) ]] ; then
-   echo "Ok."
+if [[ "$OS" = "CentOs" && ("$VER" = "6" || "$VER" = "7" ) || 
+      "$OS" = "Ubuntu" && ( "$VER" = "16.04" ) ]] ; then
+    echo "- Ok."
 else
-   echo "Sorry, this OS is not supported."
-   exit 1
+    echo "Sorry, this OS is not supported by Sentora." 
+    exit 1
 fi
 
 
@@ -68,9 +72,9 @@ cd /etc/sentora/panel/modules/fail2ban
 ## Disabled for now
 wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
 unzip sentora-fail2ban.zip
-cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
-cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban/config/centos.jail.local /etc/fail2ban/
-mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
+cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
+cp -f /etc/sentora/panel/modules/fail2ban/config/centos.jail.local /etc/fail2ban/jail.local
+#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
 chmod 777 /etc/fail2ban/jail.local
 
 ## Add fail2ban to cron - Not sure what this does yet
@@ -114,9 +118,9 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 	## Disabled for now
 	wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
 	unzip sentora-fail2ban.zip
-	cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
-	cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban/config/ubuntu.jail.local /etc/fail2ban/
-	mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
+	cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
+	cp -f /etc/sentora/panel/modules/fail2ban/config/ubuntu.jail.local /etc/fail2ban/jail.local
+	#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
 	chmod 777 /etc/fail2ban/jail.local
 	
 	ufw allow ssh
