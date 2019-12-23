@@ -2,7 +2,7 @@
 
 echo ""
 echo "############################################################"
-echo "#  Fail2Ban for Sentora 1.0.0 or 1.0.3  #"
+echo "#  Fail2Ban for Sentora 1.0.0 or 1.0.3 By: Anthony D. #"
 echo "############################################################"
 
 echo -e "\nChecking that minimal requirements are ok"
