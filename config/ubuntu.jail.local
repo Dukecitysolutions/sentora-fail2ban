@@ -8,10 +8,11 @@ action = iptables
 # the sentora-apache filter covers apache auth and overflow
 [apache]
 enabled  = true
-action = iptables-multiport[name=Postfix, port="80,443"]
+action = iptables-multiport[name=Apache, port="80,443"]
 port     = http,https
 filter   = sentora-apache
-logpath  = /var/sentora/logs/domains/*/*error.log
+logpath  = /var/sentora/logs/*error.log
+	   /var/sentora/logs/domains/*/*error.log
 maxretry = 6
 
 # to be fixed yet
@@ -50,6 +51,15 @@ filter   = sentora-proftpd
 logpath  = /var/log/auth.log
 maxretry = 5
 
+[roundcube-auth]
+enabled = true
+action = iptables-multiport[name=Apache, port="80,443"]
+port     = http,https
+filter   = sentora-roundcube-auth
+logpath  = /var/sentora/logs/roundcube/errors
+maxretry = 10
+bantime  = 3600
+
 [sshd]
 enabled = true
 action = iptables[name=SSH, port="22"]
@@ -57,4 +67,4 @@ port = ssh
 filter = sentora-sshd
 logpath = /var/log/auth.log
 maxretry = 3
-bantime  = 360000
+bantime  = 36000
