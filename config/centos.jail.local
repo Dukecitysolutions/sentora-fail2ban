@@ -5,41 +5,15 @@ destemail =
 ignoreip = 127.0.0.0/8
 action = iptables
 
-[sshd]
-enabled  = true
-action = iptables[name=SSH, port="22"]
-port     = ssh
-filter   = sentora-sshd
-logpath  = /var/log/secure
-maxretry = 6
-bantime  = 360000
-
 # the sentora-apache filter covers apache auth and overflow
 [apache]
 enabled  = true
-action = iptables-multiport[name=Postfix, port="80,443"]
+action = iptables-multiport[name=Apache, port="80,443"]
 port     = http,https
 filter   = sentora-apache
-logpath  = /var/sentora/logs/domains/*/*error.log
+logpath  = /var/sentora/logs/*error.log
+	   /var/sentora/logs/domains/*/*error.log
 maxretry = 6
-
-#sentora uses also de secure log for proftpd.
-[proftpd]
-enabled  = true
-action = iptables[name=FTP, port="21"]
-port     = ftp,ftp-data,ftps,ftps-data
-filter   = sentora-proftpd
-logpath  = /var/log/secure
-maxretry = 5
-
-# the sentora-postfix filter covers postfix and sasl
-[postfix]
-enabled  = true
-action = iptables-multiport[name=Postfix, port="25,465"]
-port     = smtp,ssmtp
-filter   = sentora-postfix
-logpath  = /var/log/maillog
-maxretry = 10
 
 # to be fixed yet
 #[control-panel]
@@ -58,3 +32,39 @@ port     = imap,imaps,pop3,pop3s
 filter   = sentora-dovecot
 logpath  = /var/log/dovecot-info.log
 maxretry = 10
+
+# the sentora-postfix filter covers postfix and sasl
+[postfix]
+enabled  = true
+action = iptables-multiport[name=Postfix, port="25,465"]
+port     = smtp,ssmtp
+filter   = sentora-postfix
+logpath  = /var/log/maillog
+maxretry = 10
+
+#sentora uses also de secure log for proftpd.
+[proftpd]
+enabled  = true
+action = iptables[name=FTP, port="21"]
+port     = ftp,ftp-data,ftps,ftps-data
+filter   = sentora-proftpd
+logpath  = /var/log/secure.log
+maxretry = 5
+
+[roundcube-auth]
+enabled = true
+action = iptables-multiport[name=Apache, port="80,443"]
+port     = http,https
+filter   = sentora-roundcube-auth
+logpath  = /var/sentora/logs/roundcube/errors
+maxretry = 10
+bantime  = 3600
+
+[sshd]
+enabled  = true
+action = iptables[name=SSH, port="22"]
+port     = ssh
+filter   = sentora-sshd
+logpath  = /var/log/secure
+maxretry = 6
+bantime  = 36000
