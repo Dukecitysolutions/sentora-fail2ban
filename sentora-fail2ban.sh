@@ -94,19 +94,17 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 
 	# Update system
 	#apt-get update && apt-get upgrade -y
-	
-	## Setup iptable default Sentora Ports
-	iptables -A INPUT -i lo -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 465 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 995 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 143 -j ACCEPT
-	iptables -A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
-	service iptables save
+		
+	## Setup UFW default Sentora Ports
+	sudo ufw allow 21
+	sudo ufw allow 80
+	sudo ufw allow 443
+	sudo ufw allow 25
+	sudo ufw allow 465
+	sudo ufw allow 110
+	sudo ufw allow 995
+	sudo ufw allow 143
+	sudo ufw allow 993
 	
 	#install fail2ban service
 	apt-get -y install fail2ban
@@ -131,7 +129,7 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 	ufw enable
 	
 	## Check fail2ban Config and start iptables
-	chkconfig --level 23 fail2ban on
+	#chkconfig --level 23 fail2ban on
 	#systemctl start iptables
 	systemctl restart fail2ban
 	
