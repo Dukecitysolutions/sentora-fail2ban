@@ -53,6 +53,7 @@ systemctl enable iptables
 iptables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p udp -m tcp --dport 53 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 465 -j ACCEPT
@@ -67,7 +68,7 @@ yum -y install fail2ban
 
 ## Make Fail2ban Module folder in Sentora modules
 mkdir /etc/sentora/panel/modules/fail2ban
-cd /etc/sentora/panel/modules/fail2ban
+cd /etc/sentora/panel/modules/fail2ban || exit
 
 ## Disabled for now
 wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
@@ -94,24 +95,28 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 
 	# Update system
 	#apt-get update && apt-get upgrade -y
+	
+	# Reset Ufw rules
+	sudo ufw reset
 		
 	## Setup UFW default Sentora Ports
-	sudo ufw allow 21
-	sudo ufw allow 80
-	sudo ufw allow 443
-	sudo ufw allow 25
-	sudo ufw allow 465
-	sudo ufw allow 110
-	sudo ufw allow 995
-	sudo ufw allow 143
-	sudo ufw allow 993
+	sudo ufw allow 21/tcp
+	sudo ufw allow 80/tcp
+	sudo ufw allow 53/udp
+	sudo ufw allow 443/tcp
+	sudo ufw allow 25/tcp
+	sudo ufw allow 465/tcp
+	sudo ufw allow 110/tcp
+	sudo ufw allow 995/tcp
+	sudo ufw allow 143/tcp
+	sudo ufw allow 993/tcp
 	
 	#install fail2ban service
 	apt-get -y install fail2ban
 	
 	## Make Fail2ban Module folder in Sentora modules
 	mkdir /etc/sentora/panel/modules/fail2ban
-	cd /etc/sentora/panel/modules/fail2ban
+	cd /etc/sentora/panel/modules/fail2ban || exit
 	
 	## Install other services needed
 	apt-get -y install unzip
