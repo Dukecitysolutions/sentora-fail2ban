@@ -3,12 +3,12 @@ bantime  = 3600
 maxretry = 4
 destemail =
 ignoreip = 127.0.0.0/8
-action = iptables
+action = ufw
 
 # the sentora-apache filter covers apache auth and overflow
 [apache]
 enabled  = true
-action = iptables-multiport[name=Apache, port="80,443"]
+#action = iptables-multiport[name=Apache, port="80,443"]
 port     = http,https
 filter   = sentora-apache
 logpath  = /var/sentora/logs/*error.log
@@ -27,25 +27,25 @@ maxretry = 6
 
 [dovecot]
 enabled  = true
-action = iptables-multiport[name=Dovecot, port="143,993,110,995"]
+#action = iptables-multiport[name=Dovecot, port="143,993,110,995"]
 port     = imap,imaps,pop3,pop3s
 filter   = sentora-dovecot
 logpath  = /var/log/dovecot-info.log
-maxretry = 10
+maxretry = 5
 
 # the sentora-postfix filter covers postfix and sasl
 [postfix]
 enabled  = true
-action = iptables-multiport[name=Postfix, port="25,465"]
+#action = iptables-multiport[name=Postfix, port="25,465"]
 port     = smtp,ssmtp
 filter   = sentora-postfix
 logpath  = /var/log/mail.log
-maxretry = 10
+maxretry = 5
 
 #sentora uses also de secure log for proftpd.
 [proftpd]
 enabled  = true
-action = iptables[name=FTP, port="21"]
+#action = iptables[name=FTP, port="21"]
 port     = ftp,ftp-data,ftps,ftps-data
 filter   = sentora-proftpd
 logpath  = /var/log/auth.log
@@ -53,7 +53,7 @@ maxretry = 5
 
 [roundcube-auth]
 enabled = true
-action = iptables-multiport[name=Apache, port="80,443"]
+#action = iptables-multiport[name=Apache, port="80,443"]
 port     = http,https
 filter   = sentora-roundcube-auth
 logpath  = /var/sentora/logs/roundcube/errors
@@ -62,7 +62,7 @@ bantime  = 3600
 
 [sshd]
 enabled = true
-action = iptables[name=SSH, port="22"]
+#action = iptables[name=SSH, port="22"]
 port = ssh
 filter = sentora-sshd
 logpath = /var/log/auth.log
