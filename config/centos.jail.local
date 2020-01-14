@@ -31,7 +31,7 @@ action = iptables-multiport[name=Dovecot, port="143,993,110,995"]
 port     = imap,imaps,pop3,pop3s
 filter   = sentora-dovecot
 logpath  = /var/log/dovecot-info.log
-maxretry = 10
+maxretry = 5
 
 # the sentora-postfix filter covers postfix and sasl
 [postfix]
@@ -40,7 +40,7 @@ action = iptables-multiport[name=Postfix, port="25,465"]
 port     = smtp,ssmtp
 filter   = sentora-postfix
 logpath  = /var/log/maillog
-maxretry = 10
+maxretry = 5
 
 #sentora uses also de secure log for proftpd.
 [proftpd]
