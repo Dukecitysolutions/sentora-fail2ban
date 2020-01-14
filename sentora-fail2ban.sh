@@ -37,61 +37,71 @@ fi
 
 if [[ "$OS" = "CentOs" ]]; then
 
-## Disable Firewalld 
-systemctl stop firewalld
-systemctl mask firewalld
+PACKAGE_INSTALLER="yum -y -q install"
 
-## Install other services needed
-yum -y install unzip
-yum -y install wget
+	## Disable Firewalld 
+	systemctl stop firewalld
+	systemctl mask firewalld
 
-## Install iptables and enable services
-yum -y install iptables-services
-systemctl enable iptables
+	## Install other services needed
+	yum -y install unzip
+	yum -y install wget
 
-## Setup iptable default Sentora Ports
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p udp -m tcp --dport 53 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 465 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 995 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 143 -j ACCEPT
-iptables -A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
-service iptables save
+	## Install iptables and enable services
+	yum -y install iptables-services
+	systemctl enable iptables
 
-## Install Fail2ban 
-yum -y install fail2ban
+	## Setup iptable default Sentora Ports
+	iptables -A INPUT -i lo -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+	iptables -A INPUT -p udp -m tcp --dport 53 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 465 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 995 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 143 -j ACCEPT
+	iptables -A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
+	service iptables save
 
-## Make Fail2ban Module folder in Sentora modules
-mkdir /etc/sentora/panel/modules/fail2ban
-cd /etc/sentora/panel/modules/fail2ban || exit
+	## Install Fail2ban 
+	yum -y install fail2ban
 
-## Disabled for now
-wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
-unzip sentora-fail2ban.zip
-cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
-cp -f /etc/sentora/panel/modules/fail2ban/config/centos.jail.local /etc/fail2ban/jail.local
-#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
-chmod 777 /etc/fail2ban/jail.local
+	## Make Fail2ban Module folder in Sentora modules
+	mkdir /etc/sentora/panel/modules/fail2ban
+	cd /etc/sentora/panel/modules/fail2ban || exit
 
-## Add fail2ban to cron - Not sure what this does yet
-#cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban-centos /etc/cron.daily/
 
-## Check fail2ban Config and start iptables
-chkconfig --level 23 fail2ban on
-systemctl start iptables
-systemctl restart fail2ban
+	## Download letsencrypt setup files
+	$PACKAGE_INSTALLER git
+	git clone https://github.com/Dukecitysolutions/sentora-fail2ban .
+	
+	
+	#cd sentora-fail2ban
+	#wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
+	#unzip sentora-fail2ban.zip
+	cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
+	cp -f /etc/sentora/panel/modules/fail2ban/config/centos.jail.local /etc/fail2ban/jail.local
+	#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
+	chmod 777 /etc/fail2ban/jail.local
 
-# Add missing logs for Roundcube to allow fail2ban to start on first installs.
-touch /var/sentora/logs/roundcube/errors
-chown -R apache:apache /var/sentora/logs/roundcube/errors
-chmod 0664 /var/sentora/logs/roundcube/errors
+	## Add fail2ban to cron - Not sure what this does yet
+	#cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban-centos /etc/cron.daily/
+
+	## Check fail2ban Config and start iptables
+	chkconfig --level 23 fail2ban on
+	systemctl start iptables
+	systemctl restart fail2ban
+
+	# Add missing logs for Roundcube to allow fail2ban to start on first installs.
+	touch /var/sentora/logs/roundcube/errors
+	chown -R apache:apache /var/sentora/logs/roundcube/errors
+	chmod 0664 /var/sentora/logs/roundcube/errors
 
 elif [[ "$OS" = "Ubuntu" ]]; then
+
+	PACKAGE_INSTALLER="apt-get -yqq install"
 
 	# Update system
 	#apt-get update && apt-get upgrade -y
@@ -122,9 +132,15 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 	apt-get -y install unzip
 	apt-get -y install wget
 	
-	## Disabled for now
-	wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
-	unzip sentora-fail2ban.zip
+
+	## Download letsencrypt setup files
+	$PACKAGE_INSTALLER git
+	git clone https://github.com/Dukecitysolutions/sentora-fail2ban .
+	
+	
+	#cd sentora-fail2ban
+	#wget -nv -O sentora-fail2ban.zip http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.zip
+	#unzip sentora-fail2ban.zip
 	cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
 	cp -f /etc/sentora/panel/modules/fail2ban/config/ubuntu.jail.local /etc/fail2ban/jail.local
 	#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
