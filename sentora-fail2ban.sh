@@ -41,7 +41,7 @@ PACKAGE_INSTALLER="yum -y -q install"
 	if  [[ "$VER" = "6" ]]; then
 		## Install iptables and enable services
 
-	elif [[ "$VER" = "7" ]]; then
+	else 
 		## Disable Firewalld 
 		systemctl stop firewalld
 		systemctl disable firewalld
