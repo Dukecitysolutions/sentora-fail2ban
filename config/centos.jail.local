@@ -48,7 +48,7 @@ enabled  = true
 action = iptables[name=FTP, port="21"]
 port     = ftp,ftp-data,ftps,ftps-data
 filter   = sentora-proftpd
-logpath  = /var/log/secure.log
+logpath  = /var/log/secure
 maxretry = 5
 
 [roundcube-auth]
