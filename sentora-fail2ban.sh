@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# -------------------------------------------------------------------------------
+# Installer Logging
+#--- Set custom logging methods so we create a log file in the current working directory.
+
+	logfile=$(date +%Y-%m-%d_%H.%M.%S_sentora_fail2ban_install.log)
+	touch "$logfile"
+	exec > >(tee "$logfile")
+	exec 2>&1
+# -------------------------------------------------------------------------------
+
 echo ""
 echo "############################################################"
 echo "#  Fail2Ban for Sentora 1.0.0 or 1.0.3 By: Anthony D. #"
