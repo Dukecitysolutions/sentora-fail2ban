@@ -38,11 +38,9 @@ if [[ "$OS" = "CentOs" ]]; then
 
 PACKAGE_INSTALLER="yum -y -q install"
 
-	if  [[ "$VER" = "6" ]]; then
-		## Install iptables and enable services
+	if  [[ "$VER" = "7" ]]; then
 
-	else 
-		## Disable Firewalld 
+		## Disable Firewalld
 		systemctl stop firewalld
 		systemctl disable firewalld
 		systemctl mask firewalld
@@ -73,16 +71,22 @@ PACKAGE_INSTALLER="yum -y -q install"
 	## Install Fail2ban 
 	yum -y install fail2ban
 
+	# Delete fail2ban folder contents for updates
+	if [ -d "/etc/sentora/configs/fail2ban" ]; then
+    	rm -rf  /etc/sentora/configs/fail2ban
+
+	fi
+	
 	## Make Fail2ban Module folder in Sentora modules
-	mkdir /etc/sentora/panel/modules/fail2ban
-	cd /etc/sentora/panel/modules/fail2ban || exit
+	mkdir /etc/sentora/configs/fail2ban
+	cd /etc/sentora/configs/fail2ban || exit
 
 	## Download letsencrypt setup files
 	$PACKAGE_INSTALLER git
 	git clone https://github.com/Dukecitysolutions/sentora-fail2ban .
 	
-	cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
-	cp -f /etc/sentora/panel/modules/fail2ban/config/centos.jail.local /etc/fail2ban/jail.local
+	cp -f /etc/sentora/configs/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
+	cp -f /etc/sentora/configs/fail2ban/config/centos.jail.local /etc/fail2ban/jail.local
 	#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
 	chmod 777 /etc/fail2ban/jail.local
 
@@ -135,21 +139,23 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 	#install fail2ban service
 	apt-get -y install fail2ban
 	
+	# Delete fail2ban folder contents for updates
+	if [ -d "/etc/sentora/configs/fail2ban" ]; then
+    	rm -rf  /etc/sentora/configs/fail2ban
+	
+	fi
+	
 	## Make Fail2ban Module folder in Sentora modules
-	mkdir /etc/sentora/panel/modules/fail2ban
-	cd /etc/sentora/panel/modules/fail2ban || exit
-	
-	## Install other services needed
-	apt-get -y install unzip
-	apt-get -y install wget
-	
+	mkdir /etc/sentora/configs/fail2ban
+	cd /etc/sentora/configs/fail2ban || exit
+
 	## Download letsencrypt setup files
 	$PACKAGE_INSTALLER git
 	git clone https://github.com/Dukecitysolutions/sentora-fail2ban .
 	
-	cp -f /etc/sentora/panel/modules/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
-	cp -f /etc/sentora/panel/modules/fail2ban/config/ubuntu.jail.local /etc/fail2ban/jail.local
-	#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
+	cp -f /etc/sentora/configs/fail2ban/filter.d/*.conf /etc/fail2ban/filter.d/
+	cp -f /etc/sentora/configs/fail2ban/config/ubuntu.jail.local /etc/fail2ban/jail.local
+	#mv /etc/fail2ban/ubuntu.jail.local /etc/fail2ban/jail.local
 	chmod 777 /etc/fail2ban/jail.local
 	
 	ufw allow ssh
