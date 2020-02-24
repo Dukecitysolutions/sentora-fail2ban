@@ -100,8 +100,13 @@ PACKAGE_INSTALLER="yum -y -q install"
 	#mv /etc/fail2ban/centos.jail.local /etc/fail2ban/jail.local
 	chmod 777 /etc/fail2ban/jail.local
 
-	## Add fail2ban to cron - Not sure what this does yet
+	## Add fail2ban to cron - Testing best way to do this.
 	#cp -f /etc/sentora/panel/modules/fail2ban/sentora-fail2ban-centos /etc/cron.daily/
+
+	# Add missing logs for Roundcube to allow fail2ban to start on first installs.
+	touch /var/sentora/logs/roundcube/errors
+	chown -R apache:apache /var/sentora/logs/roundcube/errors
+	chmod 0664 /var/sentora/logs/roundcube/errors
 
 	# Restart services and check configs
 	if  [[ "$VER" = "6" ]]; then
@@ -118,11 +123,6 @@ PACKAGE_INSTALLER="yum -y -q install"
 		chkconfig iptables on
 		systemctl restart fail2ban
     fi
-
-	# Add missing logs for Roundcube to allow fail2ban to start on first installs.
-	touch /var/sentora/logs/roundcube/errors
-	chown -R apache:apache /var/sentora/logs/roundcube/errors
-	chmod 0664 /var/sentora/logs/roundcube/errors
 
 elif [[ "$OS" = "Ubuntu" ]]; then
 
@@ -171,14 +171,14 @@ elif [[ "$OS" = "Ubuntu" ]]; then
 	ufw allow ssh
 	ufw enable
 	
+	# Add missing logs for Roundcube to allow fail2ban to start on first installs.
+	touch /var/sentora/logs/roundcube/errors
+	chown -R www-data:www-data /var/sentora/logs/roundcube/errors
+	chmod 0664 /var/sentora/logs/roundcube/errors
+	
 	## Check fail2ban Config and start iptables
 	#chkconfig --level 23 fail2ban on
 	#systemctl start iptables
 	systemctl restart fail2ban
 	
-	# Add missing logs for Roundcube to allow fail2ban to start on first installs.
-	touch /var/sentora/logs/roundcube/errors
-	chown -R www-data:www-data /var/sentora/logs/roundcube/errors
-	chmod 0664 /var/sentora/logs/roundcube/errors
-
 fi
